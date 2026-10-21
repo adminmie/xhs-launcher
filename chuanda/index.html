@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>收藏夹起号神器 · 多领域每日更新</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: #f6f6f8; color: #1f1f27; line-height: 1.55; padding-bottom: 48px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  header { background: linear-gradient(160deg, #ff2442, #ff5c3d); color: #fff; padding: 24px 16px 18px; }
+  .badge { display: inline-block; background: rgba(255,255,255,.18); border-radius: 999px; padding: 3px 12px; font-size: 12px; margin-bottom: 10px; }
+  header h1 { font-size: 22px; line-height: 1.3; }
+  header .sub { font-size: 13px; opacity: .92; margin-top: 8px; }
+  .usps { display: flex; flex-wrap: wrap; margin-top: 14px; }
+  .usp { background: rgba(255,255,255,.14); border-radius: 10px; padding: 7px 12px; font-size: 12px; margin: 0 8px 8px 0; }
+  .tabs {
+    position: sticky; top: 0; z-index: 5; background: #fff;
+    display: flex; overflow-x: auto; padding: 10px 12px; gap: 8px;
+    box-shadow: 0 1px 4px rgba(31,31,39,.08); -webkit-overflow-scrolling: touch;
+  }
+  .tab {
+    flex-shrink: 0; border: 1px solid #ececf1; background: #fafafb; color: #6b6b76;
+    border-radius: 999px; padding: 8px 16px; font-size: 14px; font-weight: 600; cursor: pointer;
+    white-space: nowrap;
+  }
+  .tab.on { background: #ff2442; border-color: #ff2442; color: #fff; }
+  .wrap { margin: 0 14px; }
+  .domain { display: none; }
+  .domain.on { display: block; }
+  .card { background: #fff; border-radius: 16px; padding: 16px; margin-top: 14px; box-shadow: 0 1px 4px rgba(31,31,39,.06); }
+  .card h2 { font-size: 16px; margin-bottom: 10px; }
+  .card h2 .tag { font-size: 11px; color: #ff2442; background: #ffe9ed; border-radius: 999px; padding: 2px 8px; margin-left: 6px; vertical-align: 2px; }
+  .steps li { display: flex; margin-bottom: 12px; font-size: 14px; list-style: none; }
+  .steps .no { flex-shrink: 0; width: 22px; height: 22px; line-height: 22px; text-align: center; background: #ffe9ed; color: #ff2442; border-radius: 50%; font-weight: 700; font-size: 13px; margin-right: 10px; }
+  .steps b { display: block; }
+  .steps .d { color: #6b6b76; font-size: 13px; }
+  .folders { list-style: none; }
+  .folders li { padding: 8px 0; border-bottom: 1px solid #ececf1; font-size: 14px; }
+  .folders li:last-child { border-bottom: none; }
+  .folders .fname { font-weight: 700; }
+  .folders .fname .st { color: #f5a623; font-size: 12px; margin-left: 4px; }
+  .folders .fdesc { font-size: 12px; color: #6b6b76; }
+  .date-pill { text-align: center; font-size: 12px; color: #9a9aa5; margin-top: 18px; }
+  a.note {
+    display: block; background: #fafafb; border: 1px solid #ececf1; border-radius: 12px;
+    padding: 11px 13px; margin-bottom: 8px; text-decoration: none; color: #1f1f27;
+  }
+  a.note:active { background: #fff5f6; border-color: #ff2442; }
+  a.note .t { font-size: 14px; font-weight: 600; }
+  a.note .m { font-size: 12px; color: #6b6b76; margin-top: 3px; }
+  a.note .m b { color: #ff2442; }
+  .group { margin-top: 6px; }
+  .group-title { font-size: 14px; font-weight: 700; margin: 12px 0 6px; }
+  textarea {
+    width: 100%; height: 170px; border: 1px solid #ececf1; border-radius: 12px;
+    background: #fafafb; padding: 12px; font-size: 13px; color: #44444e; resize: none; outline: none;
+    user-select: text; -webkit-user-select: text; -webkit-appearance: none;
+  }
+  .btn {
+    display: block; width: 100%; border: none; border-radius: 12px; background: #ff2442; color: #fff;
+    font-size: 15px; font-weight: 700; padding: 13px; margin-top: 10px; cursor: pointer;
+  }
+  .btn:active { background: #e01f3d; }
+  .btn.ghost { background: #f1f1f5; color: #1f1f27; }
+  .hint { font-size: 12px; color: #9a9aa5; margin-top: 8px; }
+  .kws span { display: inline-block; background: #f1f1f5; border-radius: 999px; padding: 3px 10px; margin: 0 6px 6px 0; font-size: 12px; color: #6b6b76; }
+  footer { margin: 20px 14px 0; font-size: 11px; color: #9a9aa5; }
+  #toast {
+    position: fixed; left: 50%; bottom: 40px; transform: translateX(-50%);
+    background: rgba(31,31,39,.9); color: #fff; font-size: 13px; border-radius: 999px;
+    padding: 9px 20px; display: none; z-index: 9;
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="badge">📅 数据更新至 10月21日 · 1 个领域可选</div>
+  <h1>穿搭收藏夹起号神器</h1>
+  <div class="sub">选你的领域 · 无需搜索 · 每天该收的笔记自动备好 · 笔记文案一键复制</div>
+  <div class="usps">
+    <span class="usp">🎯 <b id="cur-domain">穿搭</b> 领域已加载</span>
+    <span class="usp">👆 点点收藏：直链直达</span>
+    <span class="usp">📝 笔记自动生成</span>
+    <span class="usp">🔄 每日更新</span>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs"><button class="tab on" type="button" data-id="chuanda">穿搭</button></nav>
+
+<div class="wrap">
+<section class="domain" id="dom-chuanda" data-name="穿搭">
+  <div class="card">
+    <h2>🚀 傻瓜式三步起号<span class="tag">先看这里</span></h2>
+    <ul class="steps">
+      <li><span class="no">1</span><div><b>建夹子（首次 5 分钟）</b><span class="d">在小红书收藏任意笔记 → 弹窗选「加入专辑」→ 新建下方夹子（名字简介照抄），并设为<b>公开</b></span></div></li>
+      <li><span class="no">2</span><div><b>点收藏（每天 10 分钟）</b><span class="d">点开下方「今日收藏任务」的笔记卡片 → 点收藏 → 加入对应夹子，收满 15–20 条/夹</span></div></li>
+      <li><span class="no">3</span><div><b>发布笔记（1 分钟）</b><span class="d">复制下方已生成的引流笔记 → 打开小红书发布文字笔记 → 完成</span></div></li>
+    </ul>
+  </div><div class="card"><h2>🗂️ 你的穿搭收藏夹矩阵<span class="tag">照抄建夹</span></h2><ul class="folders"><li><span class="fname">1️⃣ 通勤穿搭公式 <span class="st">★主页推荐</span></span><br/><span class="fdesc">穿搭人看过来｜一周通勤不重样，照搬就能出门</span></li><li><span class="fname">2️⃣ 小个子穿搭思路 <span class="st">★主页推荐</span></span><br/><span class="fdesc">显高显腿长的比例公式，150+也能穿出气场</span></li><li><span class="fname">3️⃣ 配色灵感库 <span class="st">★主页推荐</span></span><br/><span class="fdesc">不会配色的直接抄，高级感配色模板</span></li><li><span class="fname">4️⃣ 基础款清单</span><br/><span class="fdesc">值得投资的基础款，一件穿三年</span></li><li><span class="fname">5️⃣ 平价好物测评</span><br/><span class="fdesc">百元也能穿出质感，真实测评打底</span></li><li><span class="fname">6️⃣ 穿搭雷区盘点</span><br/><span class="fdesc">容易显胖显廉价的单品与穿法，先避再买</span></li></ul></div><div class="date-pill">📅 穿搭 · 今日收藏任务 · 10月21日 更新 · 共 10 条</div><div class="group"><div class="group-title">1️⃣ 通勤穿搭公式 <span style="font-size:12px;color:#9a9aa5;">(6条 → 收进「通勤穿搭公式」)</span></div><a class="note" href="https://www.xiaohongshu.com/explore/6ad09c3a000000001b02ca19" target="_blank" rel="noopener"><div class="t">秋冬高质感通勤穿搭！！拒绝臃肿穿出时尚！</div><div class="m">@吴伊楠 · <b>互动 5000+ · 收藏 863</b> · 10-15</div></a><a class="note" href="https://www.xiaohongshu.com/explore/6ace2d5f000000001c01c58a" target="_blank" rel="noopener"><div class="t">秋季不露腿通勤穿搭｜不用力随性自在穿搭</div><div class="m">@小小小小白 · <b>互动 4262 · 收藏 857</b> · 10-14</div></a><a class="note" href="https://www.xiaohongshu.com/explore/6ad23713000000001501743c" target="_blank" rel="noopener"><div class="t">初冬不露腿通勤穿搭｜不用力随性自在穿搭</div><div class="m">@小小小小白 · <b>互动 3639 · 收藏 700</b> · 10-17</div></a><a class="note" href="https://www.xiaohongshu.com/explore/6ad1f4710000000015006341" target="_blank" rel="noopener"><div class="t">oots*｜英式学院风通勤穿搭💼</div><div class="m">@我璇_ · <b>互动 3911 · 收藏 1175</b> · 10-16</div></a><a class="note" href="https://www.xiaohongshu.com/explore/6ad0d562000000001303d00b" target="_blank" rel="noopener"><div class="t">OOTD｜通勤穿搭｜松弛感一键拿捏</div><div class="m">@Palomii · <b>互动 2330 · 收藏 632</b> · 10-15</div></a><a class="note" href="https://www.xiaohongshu.com/explore/6ad43f51000000002901018a" target="_blank" rel="noopener"><div class="t">唠嗑式分享✌️一周不同风格出游通勤穿搭合集</div><div class="m">@独角兽的粉粉 · <b>互动 2252 · 收藏 637</b> · 10-18</div></a></div><div class="group"><div class="group-title">2️⃣ 小个子穿搭思路 <span style="font-size:12px;color:#9a9aa5;">(1条 → 收进「小个子穿搭思路」)</span></div><a class="note" href="https://www.xiaohongshu.com/explore/6ad17ae5000000000a020aab" target="_blank" rel="noopener"><div class="t">一些羽绒服、裤子合集，小个子穿搭灵感✨</div><div class="m">@叫我吕大格 · <b>互动 1722 · 收藏 609</b> · 10-16</div></a></div><div class="group"><div class="group-title">3️⃣ 配色灵感库 <span style="font-size:12px;color:#9a9aa5;">→ 收进「配色灵感库」</span></div><p class="hint">今日该方向新增较少，先用夹子关键词在站内搜索收藏，明天自动补齐。</p></div><div class="group"><div class="group-title">4️⃣ 基础款清单 <span style="font-size:12px;color:#9a9aa5;">→ 收进「基础款清单」</span></div><p class="hint">今日该方向新增较少，先用夹子关键词在站内搜索收藏，明天自动补齐。</p></div><div class="group"><div class="group-title">5️⃣ 平价好物测评 <span style="font-size:12px;color:#9a9aa5;">→ 收进「平价好物测评」</span></div><p class="hint">今日该方向新增较少，先用夹子关键词在站内搜索收藏，明天自动补齐。</p></div><div class="group"><div class="group-title">6️⃣ 穿搭雷区盘点 <span style="font-size:12px;color:#9a9aa5;">(1条 → 收进「穿搭雷区盘点」)</span></div><a class="note" href="https://www.xiaohongshu.com/explore/6acf518f000000001c01d256" target="_blank" rel="noopener"><div class="t">素颜穿搭｜秋冬通勤穿搭如何戒掉学生气？</div><div class="m">@白星Cindy · <b>互动 1612 · 收藏 339（风格升级思路）</b> · 10-14</div></a></div><div class="card"><h2>📝 穿搭人引流笔记<span class="tag">已生成 · 复制即发</span></h2><p class="hint">标题：</p><textarea class="nt-title" readonly>穿搭人敢不敢点进我的收藏夹</textarea><p class="hint" style="margin-top:10px">正文：</p><textarea class="nt-body" readonly>穿搭人听我说！！
+是不是衣柜爆满，出门还是没衣服穿？（共鸣）
+我把能找到的穿搭干货全收进收藏夹了👇
+
+📌 通勤穿搭公式：一周不重样，照搬出门
+📌 小个子穿搭思路：比例公式直接抄
+📌 穿搭雷区盘点：先避雷再剁手
+
+主页点开就能看，全部公开不用谢🙏
+以后每周更新，关注我不迷路～
+#穿搭公式 #小个子穿搭 #基础款 #穿搭避雷</textarea><button class="btn copybtn" type="button" data-kind="title">复制标题</button><button class="btn copybtn" type="button" data-kind="body">复制正文</button><button class="btn ghost copybtn" type="button" data-kind="body" data-all="1">标题+正文一起复制</button><p class="hint">复制后打开小红书 → 点底部 ➕ → 发布文字笔记 → 粘贴发布。建议确认内容后再点发布。</p></div><div class="card"><h2>🔤 明日新关键词雷达</h2><div class="kws"><span>不露腿通勤（秋冬时令）</span><span>学院风</span><span>松弛感</span><span>戒掉学生气</span></div><p class="hint">每天页面会更新值得追加收藏的新方向，照着收就能让夹子保持新鲜度。</p></div></section>
+  <footer>
+    数据说明：笔记热度快照截至数据更新日（互动 1000+ 的站内公开笔记），实际数据以小红书 App 内实时为准；部分领域当日新增较少时显示「更新中」，每日自动补齐。<br/>
+    本页面仅为内容整理与文案辅助工具，不代操作任何账号；发布前请自行确认内容。温和使用，拒绝机器行为。
+  </footer>
+</div>
+<div id="toast"></div>
+<script>
+  function showToast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.display = 'block';
+    setTimeout(function () { t.style.display = 'none'; }, 1600);
+  }
+  function copyText(text, okMsg) {
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); showToast(okMsg); }
+      catch (e) { showToast('复制失败，请长按文本框手动复制'); }
+      document.body.removeChild(ta);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { showToast(okMsg); }, fallback);
+    } else { fallback(); }
+  }
+  function showDomain(id) {
+    var domains = document.querySelectorAll('.domain');
+    for (var i = 0; i < domains.length; i++) {
+      domains[i].className = (domains[i].id === 'dom-' + id) ? 'domain on' : 'domain';
+    }
+    var tabs = document.querySelectorAll('.tab');
+    for (var j = 0; j < tabs.length; j++) {
+      tabs[j].className = (tabs[j].getAttribute('data-id') === id) ? 'tab on' : 'tab';
+    }
+    var name = document.getElementById('dom-' + id).getAttribute('data-name');
+    var cur = document.getElementById('cur-domain');
+    if (cur) cur.textContent = name;
+    if (history.replaceState) history.replaceState(null, '', '#' + id); else location.hash = id;
+    window.scrollTo(0, 0);
+  }
+  document.getElementById('tabs').addEventListener('click', function (e) {
+    var t = e.target;
+    if (t && t.getAttribute && t.getAttribute('data-id')) showDomain(t.getAttribute('data-id'));
+  });
+  document.body.addEventListener('click', function (e) {
+    var btn = e.target;
+    if (!btn || !btn.classList || !btn.classList.contains('copybtn')) return;
+    var sec = btn.closest('.domain');
+    var kind = btn.getAttribute('data-kind');
+    var ta = sec.querySelector(kind === 'title' ? '.nt-title' : '.nt-body');
+    if (!ta) return;
+    var label = kind === 'title' ? '标题' : '正文';
+    if (btn.getAttribute('data-all') === '1') {
+      copyText(sec.querySelector('.nt-title').value + '\n\n' + ta.value, '标题+正文已复制 ✅');
+    } else {
+      copyText(ta.value, label + '已复制 ✅');
+    }
+  });
+  (function () {
+    var h = (location.hash || '').replace('#', '');
+    var valid = document.getElementById('dom-' + h);
+    showDomain(valid ? h : document.querySelector('.domain').id.replace('dom-', ''));
+  })();
+</script>
+</body>
+</html>
